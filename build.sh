@@ -199,7 +199,36 @@ configure_kernel() {
         ./scripts/config --file out/.config -e KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS || true
     fi
 
-    # Regenerate config
+    # ==========================================
+    # Enable Docker & Container Primitives
+    # ==========================================
+    log "Enabling Docker and container support..."
+    # Namespaces
+    ./scripts/config --file out/.config -e NAMESPACES
+    ./scripts/config --file out/.config -e PID_NS
+    ./scripts/config --file out/.config -e IPC_NS
+    ./scripts/config --file out/.config -e NET_NS
+    ./scripts/config --file out/.config -e UTS_NS
+    
+    # Cgroups
+    ./scripts/config --file out/.config -e CGROUPS
+    ./scripts/config --file out/.config -e CGROUP_DEVICE
+    ./scripts/config --file out/.config -e CGROUP_SCHED
+    ./scripts/config --file out/.config -e CGROUP_CPUACCT
+    ./scripts/config --file out/.config -e CGROUP_FREEZER
+    ./scripts/config --file out/.config -e MEMCG
+    ./scripts/config --file out/.config -e CPUSETS
+    ./scripts/config --file out/.config -e CGROUP_PIDS
+    
+    # Networking & Storage
+    ./scripts/config --file out/.config -e VETH
+    ./scripts/config --file out/.config -e BRIDGE
+    ./scripts/config --file out/.config -e NETFILTER_XT_MATCH_ADDRTYPE
+    ./scripts/config --file out/.config -e OVERLAY_FS
+    ./scripts/config --file out/.config -e KEYS
+    # ==========================================
+
+    # Regenerate config to resolve dependencies
     make O=out ARCH=arm64 olddefconfig
 
     cd ..
